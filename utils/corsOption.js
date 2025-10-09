@@ -4,6 +4,7 @@ import cors from "cors";
 const whitelist = [
   "http://localhost:5173", // dev vite
   "https://folapp.rndkito.com", // production domain
+  "http://folapp.rndkito.com",
 ];
 
 const corsOptions = {
