@@ -3,7 +3,7 @@ import cors from "cors";
 
 const whitelist = [
   "http://localhost:5173", // dev vite
-  "https://meethint.rndkito.com", // production domain
+  "https://folapp.rndkito.com", // production domain
 ];
 
 const corsOptions = {

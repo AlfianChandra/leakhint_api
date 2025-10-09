@@ -13,7 +13,7 @@ const metaDir = ".logs_meta";
 const logFormat = winston.format.combine(
   winston.format.timestamp({ format: "YYYY-MM-DD HH:mm:ss" }),
   winston.format.printf((info) => {
-    return `[${info.timestamp}] [${info.level.toUpperCase()}]: ${info.message}`;
+    return `[LOG] -> ${info.message}`;
   })
 );
 
