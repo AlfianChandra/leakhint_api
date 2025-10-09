@@ -296,7 +296,8 @@ const pipeController = () => {
 
   const modelUpload = async (req, res) => {
     try {
-      const { model_name, tline, model, parameters } = req.body;
+      const { model_name, tline, model, parameters, infix, training_feature } =
+        req.body;
       const modelBuffer = Buffer.from(model.model_data, "base64");
       const modelExt = model.model_ext;
       const modelOutput = model.model_output;
@@ -317,7 +318,7 @@ const pipeController = () => {
         return result;
       };
       const q =
-        "INSERT INTO models (id_model, id_tline, model_name, parameters, model_filename, output) VALUES (?, ?, ?, ?, ?, ?)";
+        "INSERT INTO models (id_model, id_tline, model_name, parameters, model_filename, output, infix, training_feature) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
       await pool.execute(q, [
         randomId(),
         tline,
@@ -325,6 +326,8 @@ const pipeController = () => {
         parameters,
         modelFilename,
         modelOutput,
+        infix,
+        training_feature || null,
       ]);
 
       return res
@@ -427,11 +430,14 @@ const pipeController = () => {
       const model = modelRows[0];
       const modelFilename = model.model_filename;
       const modelParameters = model.parameters;
-
+      const modelOutput = model.output;
+      const trainingFeature = model.training_feature;
+      const infix = model.infix;
       let inputData = {};
       let n = 1;
       for (const i of delta) {
-        inputData[`spot` + n] = i;
+        const paramInfix = infix.replace("{x}", n);
+        inputData[paramInfix] = i;
         n++;
       }
       console.log(inputData);
@@ -439,7 +445,10 @@ const pipeController = () => {
         modelParameters,
         modelFilename,
         inputData,
-        tline_length
+        tline_length,
+        model.infix,
+        modelOutput,
+        trainingFeature || ""
       );
       const resultParsed = JSON.parse(result.trim());
       const leakSpot = resultParsed.result.lokasi;
@@ -448,37 +457,40 @@ const pipeController = () => {
       const leakspotFloat = leakSpot
         ? parseFloat(leakSpot.split(" ")[1])
         : null;
-      console.log(resultParsed, typeof leakspotFloat, leakStatus);
+      console.log(resultParsed);
       const updateDate = dayjs().format("YYYY-MM-DD HH:mm:ss");
       const updateQ =
-        "UPDATE prediction_result SET is_leak = ?, leak_point = ?, timestamp = ? WHERE token = ?";
-      await pool.execute(updateQ, [
-        leakStatus,
-        leakspotFloat,
-        updateDate,
-        token,
-      ]);
+        "UPDATE prediction_result SET timestamp = ? WHERE token = ?";
+      await pool.execute(updateQ, [updateDate, token]);
 
       return res.status(200).json({
         success: true,
         message: "Prediction executed",
-        result: {
-          leak: leakStatus == 1 ? true : false,
-          pos: leakspotFloat || null,
-        },
+        result: resultParsed.result,
       });
     } catch (err) {
       return res.status(500).json({ success: false, message: err.message });
     }
   };
 
-  const runModel = (parameters, path, inputData, tlineLength) => {
+  const runModel = (
+    parameters,
+    path,
+    inputData,
+    tlineLength,
+    infix,
+    output,
+    trainingFeature
+  ) => {
     return new Promise((resolve, reject) => {
       const model = spawn("python3", [
         "models/prediction.py",
         parameters,
         path,
         tlineLength,
+        infix,
+        output,
+        trainingFeature,
       ]);
       let stdout = "";
       let stderr = "";
