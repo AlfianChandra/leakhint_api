@@ -389,3 +389,33 @@
 [LOG] -> Bootstrap: All services ready.
 [LOG] -> Bootstrap: Server listening on port 6625
 [LOG] -> MongoDB: Connected to the database successfully
+[LOG] -> Bootstrap: Starting services...
+[LOG] -> Bootstrap: Loading listeners...
+[LOG] -> Listener: Loaded 0 file(s)
+[LOG] -> Bootstrap: All services ready.
+[LOG] -> Bootstrap: Server listening on port 6625
+[LOG] -> MongoDB: Connected to the database successfully
+[LOG] -> Bootstrap: Starting services...
+[LOG] -> Bootstrap: Loading listeners...
+[LOG] -> Listener: Loaded 0 file(s)
+[LOG] -> Bootstrap: All services ready.
+[LOG] -> Bootstrap: Server listening on port 6625
+[LOG] -> MongoDB: Connected to the database successfully
+[LOG] -> Bootstrap: Starting services...
+[LOG] -> Bootstrap: Loading listeners...
+[LOG] -> Listener: Loaded 0 file(s)
+[LOG] -> Bootstrap: All services ready.
+[LOG] -> Bootstrap: Server listening on port 6625
+[LOG] -> MongoDB: Connected to the database successfully
+[LOG] -> Bootstrap: Starting services...
+[LOG] -> Bootstrap: Loading listeners...
+[LOG] -> Listener: Loaded 0 file(s)
+[LOG] -> Bootstrap: All services ready.
+[LOG] -> Bootstrap: Server listening on port 6625
+[LOG] -> MongoDB: Connected to the database successfully
+[LOG] -> Bootstrap: Starting services...
+[LOG] -> Bootstrap: Loading listeners...
+[LOG] -> Listener: Loaded 0 file(s)
+[LOG] -> Bootstrap: All services ready.
+[LOG] -> Bootstrap: Server listening on port 6625
+[LOG] -> MongoDB: Connected to the database successfully

@@ -59,6 +59,7 @@ router.post(
   pipeController().uploadLineNode
 );
 
+
 //Pipe monitoring
 router.post(
   "/api/v1/pipe/monitoring/spot/get",
