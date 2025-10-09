@@ -474,7 +474,7 @@ const pipeController = () => {
 
   const runModel = (parameters, path, inputData, tlineLength) => {
     return new Promise((resolve, reject) => {
-      const model = spawn("python", [
+      const model = spawn("python3", [
         "models/prediction.py",
         parameters,
         path,
