@@ -12,8 +12,8 @@ const userController = () => {
       }
 
       // Example query - adjust according to your database schema
-      const query = "SELECT * FROM user WHERE email = ?";
-      const [user] = await pool.query(query, [email]);
+      const query = "SELECT * FROM user WHERE email = ? OR user_id = ?";
+      const [user] = await pool.query(query, [email, email]);
       if (user[0] == undefined) {
         return res
           .status(401)
