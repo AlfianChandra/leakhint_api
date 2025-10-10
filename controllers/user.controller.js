@@ -12,8 +12,8 @@ const userController = () => {
       }
 
       // Example query - adjust according to your database schema
-      const query = "SELECT * FROM user WHERE email = ? AND field_id = ?";
-      const [user] = await pool.query(query, [email, field]);
+      const query = "SELECT * FROM user WHERE email = ?";
+      const [user] = await pool.query(query, [email]);
       if (user[0] == undefined) {
         return res.status(401).json({ message: "Invalid credentials" });
       }
@@ -32,13 +32,25 @@ const userController = () => {
       } else if (validUser.field_id === "rtu") {
         dataTable = "pressure_rtu";
       }
+
+      let targetField = "";
+      if (validUser.role === "admin") {
+        if (field === validUser.field_id) {
+          targetField = validUser.field_id;
+        } else {
+          return res.status(401).json({ message: "Invalid credentials" });
+        }
+      } else if (validUser.role === "superadmin") {
+        targetField = field;
+      }
+
       // Generate JWT token
       const tokenPayload = {
         id: validUser.id,
         email: validUser.email,
         name: validUser.username,
         role: validUser.role,
-        field_id: validUser.field_id,
+        field_id: targetField,
         data_table: dataTable,
       };
       const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
