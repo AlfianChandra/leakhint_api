@@ -68,6 +68,7 @@ const userController = () => {
 
       validUser.token = token;
       validUser.field_id = targetField;
+      validUser.role = "admin";
       delete validUser.password; // Remove password from response
       res.status(200).json({ message: "Login successful", user: validUser });
     } catch (err) {
