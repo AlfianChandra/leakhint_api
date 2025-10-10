@@ -17,7 +17,7 @@ const userController = () => {
       if (user[0] == undefined) {
         return res
           .status(401)
-          .json({ message: "Invalid credentials, user not found" });
+          .json({ message: "Invalid credentials, user not found: " + user });
       }
 
       const validUser = user[0];
