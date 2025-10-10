@@ -15,9 +15,10 @@ const userController = () => {
       const query = "SELECT * FROM user WHERE email = ? OR user_id = ?";
       const [user] = await pool.query(query, [email, email]);
       if (user[0] == undefined) {
-        return res
-          .status(401)
-          .json({ message: "Invalid credentials, user not found: " + user });
+        return res.status(401).json({
+          message:
+            "Invalid credentials, user not found: " + email + " | " + user,
+        });
       }
 
       const validUser = user[0];
