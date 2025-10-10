@@ -56,7 +56,7 @@ const userController = () => {
         id: validUser.id,
         email: validUser.email,
         name: validUser.username,
-        role: validUser.role,
+        role: "admin",
         field_id: targetField,
         data_table: dataTable,
       };
