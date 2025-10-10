@@ -15,7 +15,9 @@ const userController = () => {
       const query = "SELECT * FROM user WHERE email = ?";
       const [user] = await pool.query(query, [email]);
       if (user[0] == undefined) {
-        return res.status(401).json({ message: "Invalid credentials" });
+        return res
+          .status(401)
+          .json({ message: "Invalid credentials, user not found" });
       }
 
       const validUser = user[0];
@@ -23,14 +25,9 @@ const userController = () => {
       //verify bcrypt password
       const verifyPassword = await bcrypt.compare(password, userPassword);
       if (!verifyPassword) {
-        return res.status(401).json({ message: "Invalid credentials" });
-      }
-
-      let dataTable = "";
-      if (validUser.field_id === "jbi") {
-        dataTable = "pressure_jbi";
-      } else if (validUser.field_id === "rtu") {
-        dataTable = "pressure_rtu";
+        return res
+          .status(401)
+          .json({ message: "Invalid credentials, password mismatch" });
       }
 
       let targetField = "";
@@ -38,10 +35,19 @@ const userController = () => {
         if (field === validUser.field_id) {
           targetField = validUser.field_id;
         } else {
-          return res.status(401).json({ message: "Invalid credentials" });
+          return res
+            .status(401)
+            .json({ message: "Invalid credentials, field mismatch" });
         }
       } else if (validUser.role === "superadmin") {
         targetField = field;
+      }
+
+      let dataTable = "";
+      if (targetField === "jbi") {
+        dataTable = "pressure_jbi";
+      } else if (targetField === "rtu") {
+        dataTable = "pressure_rtu";
       }
 
       // Generate JWT token
