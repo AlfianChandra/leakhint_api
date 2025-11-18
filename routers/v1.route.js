@@ -59,7 +59,6 @@ router.post(
   pipeController().uploadLineNode
 );
 
-
 //Pipe monitoring
 router.post(
   "/api/v1/pipe/monitoring/spot/get",
@@ -91,12 +90,17 @@ router.post(
   "/api/v1/pipe/analysis/prediction/validate",
   verifyRequest,
   pipeController().validatePrediction
-)
+);
 
 router.post(
   "/api/v1/pipe/analysis/prediction/execute",
   verifyRequest,
   pipeController().executePrediction
+);
+
+router.post(
+  "/api/proxy/v1/pipe/analysis/prediction/jmr",
+  pipeController().jmrProxy
 );
 
 export default router;

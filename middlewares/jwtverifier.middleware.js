@@ -5,14 +5,16 @@ const routerExclusion = ["/socket.io"];
 const allowedOrigins = [
   "http://localhost:5173",
   "http://localhost:6625",
+  "https://jamer.findingoillosses.com",
+  "https://jamer.findingoillosses.com/",
   "PostmanRuntime",
   "https://meethint.rndkito.com/",
   "https://meethint.rndkito.com",
 ];
 
 export const verifyRequest = (req, res, next) => {
-  // const clientIP =
-  //   req.headers["x-forwarded-for"] || req.connection.remoteAddress;
+  const clientIP =
+    req.headers["x-forwarded-for"] || req.connection.remoteAddress;
   // const route = req.originalUrl;
   // //Skip JWT verification for excluded routes
   // if (routerExclusion.some((path) => route.startsWith(path))) {

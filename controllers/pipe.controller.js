@@ -543,6 +543,108 @@ const pipeController = () => {
     return token;
   };
 
+  //Proxy functions can be added here if needed
+  const jmrProxy = () => (req, res) => {
+    const inputData = req.body;
+    const modelPath = "models/jmr_proxy_model.sav";
+
+    try {
+      // Validate input
+      if (
+        !inputData.sensor_locations ||
+        !inputData.normal_pressure ||
+        !inputData.drop_pressure
+      ) {
+        return res.status(400).json({
+          success: false,
+          error:
+            "Missing required input fields: sensor_locations, normal_pressure, drop_pressure",
+        });
+      }
+
+      if (
+        inputData.sensor_locations.length !==
+          inputData.normal_pressure.length ||
+        inputData.sensor_locations.length !== inputData.drop_pressure.length
+      ) {
+        return res.status(400).json({
+          success: false,
+          error: "All sensor data arrays must have the same length",
+        });
+      }
+
+      // Spawn Python process
+      const model = spawn("python3", ["models/jmr_proxy_model.py", modelPath]);
+
+      let stdout = "";
+      let stderr = "";
+
+      // Collect stdout data
+      model.stdout.on("data", (data) => {
+        const text = data.toString();
+        stdout += text;
+      });
+
+      // Collect stderr data
+      model.stderr.on("data", (data) => {
+        const text = data.toString();
+        stderr += text;
+        console.error(`Model stderr: ${text.trim()}`);
+      });
+
+      // Handle process close
+      model.on("close", (code) => {
+        if (code === 0) {
+          try {
+            const result = JSON.parse(stdout);
+
+            if (result.success) {
+              return res.json({
+                success: true,
+                result,
+              });
+            } else {
+              return res.status(500).json({
+                success: false,
+                error: result.error || "Model execution failed",
+              });
+            }
+          } catch (e) {
+            return res.status(500).json({
+              success: false,
+              error: `Failed to parse model output: ${e.message}`,
+              raw_output: stdout,
+            });
+          }
+        } else {
+          return res.status(500).json({
+            success: false,
+            error: `Model process exited with code ${code}`,
+            stderr: stderr,
+          });
+        }
+      });
+
+      // Handle process error
+      model.on("error", (err) => {
+        return res.status(500).json({
+          success: false,
+          error: `Failed to start model process: ${err.message}`,
+        });
+      });
+
+      // Send input JSON to Python stdin
+      model.stdin.write(JSON.stringify(inputData));
+      model.stdin.end();
+    } catch (err) {
+      console.error("Unexpected error:", err);
+      return res.status(500).json({
+        success: false,
+        error: `Unexpected error: ${err.message}`,
+      });
+    }
+  };
+
   return {
     getTrunklines,
     getSpotsByTrunkline,
@@ -558,6 +660,7 @@ const pipeController = () => {
     uploadLineNode,
     validatePrediction,
     executePrediction,
+    jmrProxy,
   };
 };
 export default pipeController;
