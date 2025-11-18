@@ -382,12 +382,12 @@ const pipeController = () => {
       const mModel = rows[0];
       const modelParameters = mModel.parameters;
       const deltaLength = delta.length;
-      if (deltaLength != modelParameters) {
-        return res.status(400).json({
-          success: false,
-          message: `Delta length (${deltaLength}) does not match model parameters (${modelParameters})`,
-        });
-      }
+      // if (deltaLength != modelParameters) {
+      //   return res.status(400).json({
+      //     success: false,
+      //     message: `Delta length (${deltaLength}) does not match model parameters (${modelParameters})`,
+      //   });
+      // }
       const token = generateToken();
       const iduser = req.user.id;
       //Generate token with format xxxxy-xxxx-4xxx-yxxx-xxxxxxxxxxxx
