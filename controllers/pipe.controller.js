@@ -64,16 +64,13 @@ const pipeController = () => {
     try {
       const { spot_id, ...rest } = req.body;
 
-      // ambil semua field dari `rest`
       const keys = Object.keys(rest);
       const values = Object.values(rest);
 
-      // bikin SET dynamic: "name = ?, address = ?, status = ?"
       const setClause = keys.map((key) => `${key} = ?`).join(", ");
 
       const q = `UPDATE spot SET ${setClause} WHERE spot_id = ?`;
 
-      // eksekusi dengan values + spot_id
       const [result] = await pool.execute(q, [...values, spot_id]);
 
       if (result.affectedRows === 0) {
@@ -94,13 +91,10 @@ const pipeController = () => {
     try {
       const { tline_id, ...rest } = req.body;
 
-      // ambil semua field dari `rest`
       const keys = Object.keys(rest);
       const values = Object.values(rest);
-      // bikin SET dynamic: "name = ?, address = ?, status = ?"
       const setClause = keys.map((key) => `${key} = ?`).join(", ");
       const q = `UPDATE trunkline SET ${setClause} WHERE tline_id = ?`;
-      // eksekusi dengan values + tline_id
       const [result] = await pool.execute(q, [...values, tline_id]);
       if (result.affectedRows === 0) {
         return res
@@ -119,7 +113,6 @@ const pipeController = () => {
     try {
       const { spot_id, date_filter } = req.body;
       const startDate = date_filter;
-      //End date is today at 23:59:59
       const endDate = dayjs(startDate)
         .endOf("day")
         .format("YYYY-MM-DD HH:mm:ss");
@@ -161,8 +154,6 @@ const pipeController = () => {
   const playbackGetData = async (req, res) => {
     try {
       const { dates, timeRange, spots } = req.body;
-
-      // Validasi input
       if (!dates || !Array.isArray(dates) || dates.length === 0) {
         return res.status(400).json({
           success: false,
@@ -599,7 +590,7 @@ const pipeController = () => {
             const result = JSON.parse(stdout);
 
             if (result.success) {
-              return res.json({
+              return res.status(200).json({
                 success: true,
                 result,
               });
