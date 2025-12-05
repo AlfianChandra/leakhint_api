@@ -537,6 +537,7 @@ const pipeController = () => {
   //Proxy functions can be added here if needed
   const jmrProxy = () => (req, res) => {
     const inputData = req.body;
+    console.log("Received JMR proxy request with data:", inputData);
     const modelPath = "models/jmr_proxy_model.sav";
 
     try {
